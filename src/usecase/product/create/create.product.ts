@@ -4,6 +4,7 @@ import {
   InputCreateProductDto,
   OutputCreateProductDto,
 } from "./create.product.dto";
+import { v4 as uuidv4 } from "uuid";
 
 export default class CreateProductUseCase {
   private productRepository: ProductRepositoryInterface;
@@ -12,7 +13,7 @@ export default class CreateProductUseCase {
   }
 
   async execute(input: InputCreateProductDto): Promise<OutputCreateProductDto> {
-    const product = new Product(null, input.name, input.price);
+    const product = new Product(uuidv4(), input.name, input.price);
     await this.productRepository.create(product);
     return {
       id: product.id,
