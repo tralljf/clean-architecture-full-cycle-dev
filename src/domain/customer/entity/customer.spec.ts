@@ -68,4 +68,10 @@ describe("Customer tests", () => {
     customer.deactivate();
     expect(customer.isActive()).toBeFalsy();
   });
+
+  it("should validate when name and id are empty", () => {
+    expect(() => {
+      new Customer("", "");
+    }).toThrowError("customer: Id is required,customer: Name is required");
+  });
 });

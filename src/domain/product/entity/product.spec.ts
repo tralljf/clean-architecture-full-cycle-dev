@@ -9,19 +9,19 @@ describe("Product tests", () => {
   it("should validate invalid product id", () => {
     expect(() => {
       new Product("", "Product 1", 100);
-    }).toThrowError("Id is required");
+    }).toThrow("product: Id is required");
   });
 
   it("should validate invalid product name", () => {
     expect(() => {
       new Product("1", "", 100);
-    }).toThrowError("Name is required");
+    }).toThrow("product: Name is required");
   });
 
   it("should validate invalid product price", () => {
     expect(() => {
       new Product("1", "Product 1", -1);
-    }).toThrowError("Price must be greater than 0");
+    }).toThrow("product: Price must be greater than 0");
   });
 
   it("should validate valid product", () => {
@@ -39,7 +39,7 @@ describe("Product tests", () => {
     const product = new Product("1", "Product 1", 100);
     expect(() => {
       product.setName("");
-    }).toThrowError("Name is required");
+    }).toThrowError("product: Name is required");
   });
 
   it("should change product price", () => {
@@ -52,6 +52,14 @@ describe("Product tests", () => {
     const product = new Product("1", "Product 1", 100);
     expect(() => {
       product.setPrice(-1);
-    }).toThrowError("Price must be greater than 0");
+    }).toThrow("product: Price must be greater than 0");
+  });
+
+  it("should validate product when name is empty and price is invalid", () => {
+    expect(() => {
+      const product = new Product("1", "", -1);
+    }).toThrow(
+      "product: Name is required,product: Price must be greater than 0"
+    );
   });
 });

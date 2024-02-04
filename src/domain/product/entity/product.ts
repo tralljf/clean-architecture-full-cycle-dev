@@ -1,12 +1,13 @@
+import Entity from "../../@shared/entity/entity.abstract";
+import NotificationError from "../../@shared/notification/notification.error";
 import ProductInterface from "./product.interface";
 
-export default class Product implements ProductInterface {
-  private _id: string;
+export default class Product extends Entity implements ProductInterface {
   private _name: string;
   private _price: number;
 
   constructor(id: string, name: string, price: number) {
-    this._id = id;
+    super(id);
     this._name = name;
     this._price = price;
     this._validate();
@@ -14,15 +15,28 @@ export default class Product implements ProductInterface {
 
   private _validate() {
     if (this._id === "") {
-      throw new Error("Id is required");
+      this.notification.addError({
+        message: "Id is required",
+        context: "product",
+      });
     }
 
     if (this._name.length === 0) {
-      throw new Error("Name is required");
+      this.notification.addError({
+        message: "Name is required",
+        context: "product",
+      });
     }
 
     if (this._price < 0) {
-      throw new Error("Price must be greater than 0");
+      this.notification.addError({
+        message: "Price must be greater than 0",
+        context: "product",
+      });
+    }
+
+    if (this.notification.hasError()) {
+      throw new NotificationError(this.notification.getErrors());
     }
   }
 
