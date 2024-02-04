@@ -31,17 +31,19 @@ describe("Unit Test List Customer", () => {
     });
 
     // Assert
-    expect(result).toEqual([
-      {
-        id: "1",
-        name: "John",
-        address: {
-          street: "rua",
-          city: "cidade",
-          zip: "123",
-          country: "pais",
+    expect(result).toEqual({
+      customers: [
+        {
+          id: "1",
+          name: "John",
+          address: {
+            street: "rua",
+            city: "cidade",
+            zip: "123",
+            country: "pais",
+          },
         },
-      },
-    ]);
+      ],
+    });
   });
 });

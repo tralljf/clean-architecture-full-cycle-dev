@@ -79,12 +79,40 @@ describe("E2E test for Customer", () => {
         },
       });
 
-    const response = await request(app).get("/customer/list");
+    const response = await request(app).get("/customer");
 
     expect(response.status).toBe(200);
-    expect(response.body).toEqual([
-      {
-        id: expect.any(String),
+    expect(response.body).toEqual({
+      customers: [
+        {
+          id: expect.any(String),
+          name: "John Doe",
+          address: {
+            street: "1234 Main St",
+            city: "New York",
+            country: "USA",
+            zip: "10001",
+          },
+        },
+        {
+          id: expect.any(String),
+          name: "Jane ",
+          address: {
+            street: "1234 Main St2",
+            city: "New York2",
+            country: "USA2",
+            zip: "10002",
+          },
+        },
+      ],
+    });
+  });
+
+  it("should list all customers in XML format", async () => {
+    await CustomerModel.truncate();
+    await request(app)
+      .post("/customer")
+      .send({
         name: "John Doe",
         address: {
           street: "1234 Main St",
@@ -92,9 +120,11 @@ describe("E2E test for Customer", () => {
           country: "USA",
           zip: "10001",
         },
-      },
-      {
-        id: expect.any(String),
+      });
+
+    await request(app)
+      .post("/customer")
+      .send({
         name: "Jane ",
         address: {
           street: "1234 Main St2",
@@ -102,7 +132,18 @@ describe("E2E test for Customer", () => {
           country: "USA2",
           zip: "10002",
         },
-      },
-    ]);
+      });
+
+    const response = await request(app)
+      .get("/customer")
+      .set("Accept", "application/xml");
+
+    expect(response.status).toBe(200);
+    expect(response.text).toContain(`<?xml version="1.0" encoding="UTF-8"?>`);
+    expect(response.text).toContain(`<customers>`);
+    expect(response.text).toContain(`<customer>`);
+    expect(response.text).toContain(`<id>`);
+    expect(response.text).toContain(`<name>John Doe</name>`);
+    expect(response.text).toContain(`<name>Jane </name>`);
   });
 });

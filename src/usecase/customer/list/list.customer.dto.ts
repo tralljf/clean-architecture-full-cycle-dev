@@ -3,7 +3,7 @@ export interface InputListCustomerDto {
   limit: number;
 }
 
-export interface OutputListCustomerDto {
+type Customer = {
   id: string;
   name: string;
   address: {
@@ -12,4 +12,8 @@ export interface OutputListCustomerDto {
     zip: string;
     country: string;
   };
+};
+
+export interface OutputListCustomerDto {
+  customers: Customer[];
 }

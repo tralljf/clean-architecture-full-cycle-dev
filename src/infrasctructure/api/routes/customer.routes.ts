@@ -2,6 +2,7 @@ import express from "express";
 import CustomerRepository from "../../customer/repository/sequelize/customer.repository";
 import CreateCustomerUsecase from "../../../usecase/customer/create/create.customer";
 import ListCustomerUseCase from "../../../usecase/customer/list/list.customer";
+import CustomerPresenter from "../presenters/customer.presenter";
 export const customerRouter = express.Router();
 
 customerRouter.post("/", async (req, res) => {
@@ -25,12 +26,20 @@ customerRouter.post("/", async (req, res) => {
   }
 });
 
-customerRouter.get("/list", async (req, res) => {
+customerRouter.get("/", async (req, res) => {
   const customerRepository = new CustomerRepository();
   const usecase = new ListCustomerUseCase(customerRepository);
   const customers = await usecase.execute({
     limit: 100,
     page: 1,
   });
-  res.status(200).json(customers);
+
+  res.format({
+    "application/json": () => {
+      res.status(200).json(customers);
+    },
+    "application/xml": () => {
+      res.status(200).send(CustomerPresenter.toXML(customers));
+    },
+  });
 });
